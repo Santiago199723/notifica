@@ -6,9 +6,10 @@
   <title>Notificações Nubank + DignoPay</title>
   <style>
     :root {
-      --white: #ffffff;
-      --gray-dark: rgba(0, 0, 0, 0.85);
-      --text-secondary: #cccccc;
+      --white: #dedcdce1;
+      --gray-dark: rgba(0, 0, 0, 0.58);
+      --text-secondary: rgba(221, 219, 219, 0.858);
+      --title-light: #cfcfcfe1;
     }
 
     * {
@@ -46,14 +47,18 @@
     .notification {
       background-color: var(--gray-dark);
       color: var(--white);
-      padding: 1.2em 1.2em;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      padding: 0.8em 1em;
+      border-radius: 27px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.022);
       display: flex;
-      gap: 1em;
-      align-items: flex-start;
+      gap: 0.6em;
+      align-items: center;
       animation: slideIn 0.4s ease;
       position: relative;
+    }
+
+    .notification.venda {
+      padding: 0.6em 0.9em;
     }
 
     .notification img {
@@ -68,56 +73,46 @@
     }
 
     .notification.dignopay img {
-      width: 50px;
-      height: 50px;
+      width: 65px;
+      height: 65px;
     }
 
     .notification-content {
       display: flex;
       flex-direction: column;
       font-size: 0.95rem;
-      line-height: 1.5;
+      line-height: 1.2;
       color: var(--white);
       flex-grow: 1;
+      justify-content: center;
     }
 
-        .timestamp {
+    .timestamp {
       position: absolute;
-      top: 1.6em; /* ← antes era 0.6em */
+      top: 1.2em; /* Ajustado mais para cima */
       right: 1em;
       font-size: 0.75rem;
       color: var(--text-secondary);
     }
 
-
-    .transferencia .title {
+    .transferencia .title,
+    .venda .title {
       font-weight: 600;
       font-size: 1.05rem;
-      margin-bottom: 0.4em;
+      margin-bottom: 0.03em;
+      color: var(--title-light);
     }
 
-    .transferencia .line {
+    .transferencia .line,
+    .venda .commission {
       color: var(--text-secondary);
-    }
-
-    .venda .title {
-      font-weight: 700;
-      font-size: 1.1rem;
-      margin-bottom: 0.3em;
-      color: var(--white);
     }
 
     .venda .from {
-      font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 0.6em;
-      color: var(--white);
-    }
-
-    .venda .commission {
       font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--text-secondary);
+      font-size: 1.05rem;
+      margin-bottom: 0.03em;
+      color: var(--white);
     }
 
     @keyframes slideIn {
@@ -207,8 +202,7 @@
     }
 
     function iniciarNotificacoes() {
-      criarNotificacaoTransferencia(); // primeira
-
+      criarNotificacaoTransferencia();
       setTimeout(() => criarNotificacaoVenda(), 3000);
       setTimeout(() => criarNotificacaoTransferencia(), 6000);
 
