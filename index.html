@@ -51,8 +51,9 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
       display: flex;
       gap: 1em;
-      align-items: center;
+      align-items: flex-start;
       animation: slideIn 0.4s ease;
+      position: relative;
     }
 
     .notification img {
@@ -61,15 +62,14 @@
       align-self: center;
     }
 
-    /* Tamanhos específicos para as imagens */
     .notification.nubank img {
       width: 40px;
       height: 40px;
     }
 
     .notification.dignopay img {
-      width: 70px;
-      height: 70px;
+      width: 50px;
+      height: 50px;
     }
 
     .notification-content {
@@ -78,7 +78,17 @@
       font-size: 0.95rem;
       line-height: 1.5;
       color: var(--white);
+      flex-grow: 1;
     }
+
+        .timestamp {
+      position: absolute;
+      top: 1.6em; /* ← antes era 0.6em */
+      right: 1em;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
 
     .transferencia .title {
       font-weight: 600;
@@ -143,9 +153,15 @@
       return (Math.random() * 900 + 50).toFixed(2).replace(".", ",");
     }
 
+    function gerarTempoAleatorio() {
+      const opcoes = ["agora", "há 1 min", "há 2 min", "há 5 min", "há 10 min"];
+      return opcoes[Math.floor(Math.random() * opcoes.length)];
+    }
+
     function criarNotificacaoTransferencia() {
       const nome = nomes[Math.floor(Math.random() * nomes.length)];
       const valor = gerarValorAleatorio();
+      const tempo = gerarTempoAleatorio();
 
       const container = document.createElement("div");
       container.className = "notification transferencia nubank";
@@ -157,6 +173,7 @@
           <div class="line">Você recebeu uma transferência de R$</div>
           <div class="line">${valor} de ${nome}</div>
         </div>
+        <span class="timestamp">${tempo}</span>
       `;
 
       adicionarNotificacao(container);
@@ -164,6 +181,7 @@
 
     function criarNotificacaoVenda() {
       const valor = gerarValorAleatorio();
+      const tempo = gerarTempoAleatorio();
 
       const container = document.createElement("div");
       container.className = "notification venda dignopay";
@@ -175,33 +193,29 @@
           <div class="from">from DignoPay</div>
           <div class="commission">Sua comissão R$ ${valor}</div>
         </div>
+        <span class="timestamp">${tempo}</span>
       `;
 
       adicionarNotificacao(container);
     }
 
     function adicionarNotificacao(container) {
-      // Remove a mais antiga se já houver 3
       if (notificationCenter.children.length >= MAX_NOTIFICACOES) {
         notificationCenter.removeChild(notificationCenter.firstChild);
       }
-
       notificationCenter.appendChild(container);
     }
 
     function iniciarNotificacoes() {
-      criarNotificacaoTransferencia(); // aparece imediatamente
+      criarNotificacaoTransferencia(); // primeira
 
-      setTimeout(() => criarNotificacaoVenda(), 6000); // depois de 3s
-      setTimeout(() => criarNotificacaoTransferencia(), 9000); // depois de 6s
+      setTimeout(() => criarNotificacaoVenda(), 3000);
+      setTimeout(() => criarNotificacaoTransferencia(), 6000);
 
       setInterval(() => {
-        const random = Math.random();
-        if (random < 0.5) {
-          criarNotificacaoTransferencia();
-        } else {
-          criarNotificacaoVenda();
-        }
+        Math.random() < 0.5
+          ? criarNotificacaoTransferencia()
+          : criarNotificacaoVenda();
       }, 8000);
     }
 
