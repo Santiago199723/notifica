@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notificações Nubank + DignoPay</title>
+  <style>
+    :root {
+      --white: #ffffff;
+      --gray-dark: rgba(0, 0, 0, 0.85);
+      --text-secondary: #cccccc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: url('fundo.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, sans-serif;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .notification-center {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 1em;
+      pointer-events: none;
+      z-index: 1000;
+      max-width: 360px;
+      width: 90%;
+    }
+
+    .notification {
+      background-color: var(--gray-dark);
+      color: var(--white);
+      padding: 1.2em 1.2em;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      display: flex;
+      gap: 1em;
+      align-items: center;
+      animation: slideIn 0.4s ease;
+    }
+
+    .notification img {
+      flex-shrink: 0;
+      object-fit: contain;
+      align-self: center;
+    }
+
+    /* Tamanhos específicos para as imagens */
+    .notification.nubank img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .notification.dignopay img {
+      width: 70px;
+      height: 70px;
+    }
+
+    .notification-content {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--white);
+    }
+
+    .transferencia .title {
+      font-weight: 600;
+      font-size: 1.05rem;
+      margin-bottom: 0.4em;
+    }
+
+    .transferencia .line {
+      color: var(--text-secondary);
+    }
+
+    .venda .title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.3em;
+      color: var(--white);
+    }
+
+    .venda .from {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.6em;
+      color: var(--white);
+    }
+
+    .venda .commission {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="notification-center" id="notification-center"></div>
+
+  <script>
+    const nomes = [
+      "José Santiago",
+      "Ana Beatriz",
+      "Carlos Silva",
+      "Juliana Souza",
+      "Rafael Castro",
+      "Lívia Almeida",
+      "Tiago Moreira"
+    ];
+
+    const notificationCenter = document.getElementById("notification-center");
+    const MAX_NOTIFICACOES = 3;
+
+    function gerarValorAleatorio() {
+      return (Math.random() * 900 + 50).toFixed(2).replace(".", ",");
+    }
+
+    function criarNotificacaoTransferencia() {
+      const nome = nomes[Math.floor(Math.random() * nomes.length)];
+      const valor = gerarValorAleatorio();
+
+      const container = document.createElement("div");
+      container.className = "notification transferencia nubank";
+
+      container.innerHTML = `
+        <img src="nubank.png" alt="Nubank" />
+        <div class="notification-content">
+          <div class="title">Transferência recebida</div>
+          <div class="line">Você recebeu uma transferência de R$</div>
+          <div class="line">${valor} de ${nome}</div>
+        </div>
+      `;
+
+      adicionarNotificacao(container);
+    }
+
+    function criarNotificacaoVenda() {
+      const valor = gerarValorAleatorio();
+
+      const container = document.createElement("div");
+      container.className = "notification venda dignopay";
+
+      container.innerHTML = `
+        <img src="dignopay.png" alt="DignoPay" />
+        <div class="notification-content">
+          <div class="title">Venda aprovada</div>
+          <div class="from">from DignoPay</div>
+          <div class="commission">Sua comissão R$ ${valor}</div>
+        </div>
+      `;
+
+      adicionarNotificacao(container);
+    }
+
+    function adicionarNotificacao(container) {
+      // Remove a mais antiga se já houver 3
+      if (notificationCenter.children.length >= MAX_NOTIFICACOES) {
+        notificationCenter.removeChild(notificationCenter.firstChild);
+      }
+
+      notificationCenter.appendChild(container);
+    }
+
+    function iniciarNotificacoes() {
+      criarNotificacaoTransferencia(); // aparece imediatamente
+
+      setTimeout(() => criarNotificacaoVenda(), 6000); // depois de 3s
+      setTimeout(() => criarNotificacaoTransferencia(), 9000); // depois de 6s
+
+      setInterval(() => {
+        const random = Math.random();
+        if (random < 0.5) {
+          criarNotificacaoTransferencia();
+        } else {
+          criarNotificacaoVenda();
+        }
+      }, 8000);
+    }
+
+    iniciarNotificacoes();
+  </script>
+</body>
+</html>
